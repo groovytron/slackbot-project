@@ -18,15 +18,13 @@ jeu auquel il joue, etc.
 Déroulement du développement
 ----------------------------
 
-1) Questionner le bot et obtenir la réponse pour savoir si le streamer
-est en ligne.
+1. Questionner le bot et obtenir la réponse pour savoir si le streamer est en ligne.
 
-2) Script console Python signalant que tel ou tel streamer commence à
-streamer par un simple print.
+2. Script console Python signalant que tel ou tel streamer commence à streamer par un simple print.
 
-3) Intégration du script dans le bot.
+3. Intégration du script dans le bot.
 
-4) Ajout d'un streamer à la liste de veille.
+4. Ajout d'un streamer à la liste de veille.
 
 Premiers problèmes
 ------------------

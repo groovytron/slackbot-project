@@ -9,7 +9,7 @@ import websockets
 
 
 DEBUG = True
-TOKEN = "xoxb-38251407938-ko6TBd5uwQs44z0cxx8OlVRM"
+TOKEN = "************************"
 RUNNING = True
 
 

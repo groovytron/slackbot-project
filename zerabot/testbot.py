@@ -7,9 +7,10 @@ import aiohttp
 
 import websockets
 
-
 DEBUG = True
-TOKEN = "************************"
+
+from .bot_token import BOT_TOKEN
+
 RUNNING = True
 
 
@@ -29,7 +30,7 @@ async def bot(token):
     loop = asyncio.get_event_loop()
     with aiohttp.ClientSession(loop=loop) as client:
         async with client.post("https://slack.com/api/rtm.start",
-                               data={"token": TOKEN}) as response:
+                               data={"token": BOT_TOKEN}) as response:
             assert 200 == response.status, "Error connecting to RTM."
             rtm = await response.json()
 
@@ -67,5 +68,5 @@ if __name__ == "__main__":
 
     loop.set_debug(DEBUG)
     loop.add_signal_handler(signal.SIGINT, stop)
-    loop.run_until_complete(bot(TOKEN))
+    loop.run_until_complete(bot(BOT_TOKEN))
     loop.close()

@@ -17,20 +17,19 @@ async def check_user(user):
                 # print(info)
                 if info['stream'] == None:
                     status = 1
-                    print(user, "is offline")
+                    return "{0}, is offline".format(user)
                 else:
                     status = 0
                     print(info['stream']['channel']['display_name'], "is playing", info['stream']['game'], "in front of", info['stream']['viewers'], "viewers")
-                    print("Watch here", info['stream']['channel']['url'])
+                    return "Watch here {0}"format(info['stream']['channel']['url'])
             except URLError as e:
                     pass
                     if e.reason == 'Not Found' or e.reason == 'Unprocessable Entity':
                         status = 2
-                        print(user, " does not exist")
+                        return "{0} does not exist".format(user)
                     else:
                         status = 3
-                        print("an error occured")
-                        return status
+                        return "an error occured"
 
 async def fetch(user):
     async with ClientSession() as session:

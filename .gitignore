@@ -94,3 +94,6 @@ lib
 pip-selfcheck.json
 
 bot_token.py
+
+Scripts
+pyvenv.cfg

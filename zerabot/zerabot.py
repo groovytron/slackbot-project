@@ -1,7 +1,6 @@
 import asyncio
 import json
 import sys
-import argparse
 from urllib.request import urlopen
 from urllib.error import URLError
 from aiohttp import ClientSession, errors
@@ -11,33 +10,9 @@ from api import api_call
 
 from bot_token import TOKEN
 
+from twitch import check_user
 
-async def check_user(user):
-    """ returns 0: online, 1: offline, 2: not found, 3: error """
-    async with ClientSession() as session:
-        url = 'https://api.twitch.tv/kraken/streams/{}'.format(user)
-        async with session.get(url) as response:
-            try:
-                info = await response.read()
-                info = json.loads(info.decode('utf-8'))
-                # print(info)
-                try:
-                    if info['stream'] == None:
-                        status = 1
-                        return "{0} is offline".format(user)
-                    else:
-                        status = 0
-                        return "{0} is playing {1} in front of {2} viewers, watch here {3}".format(info['stream']['channel']['display_name'], info['stream']['game'], info['stream']['viewers'], info['stream']['channel']['url'])
-                except KeyError as e:
-                    return "{0} doesn't exist.".format(user)
-            except URLError as e:
-                    pass
-                    if e.reason == 'Not Found' or e.reason == 'Unprocessable Entity':
-                        status = 2
-                        return "{0} does not exist".format(user)
-                    else:
-                        status = 3
-                        return "an error occured"
+import re
 
 async def answer(user_token, message):
     data = {"token": TOKEN, "channel": user_token,"text": message}
@@ -50,7 +25,9 @@ async def consumer(message):
     message_user = message.get('user')
     if message.get('type') == 'message' and message_user != None:
         #user = await api_call('users.info',{'user': message.get('user')})
-        user_status = await check_user(message["text"])
+        # asked_user = re.search(r'(\S+)', message["text"].strip())
+        asked_user = message["text"].split(' ', 1)[0]
+        user_status = await check_user(asked_user)
         #print("{0}: {1}".format(user["user"]["name"],user_status))
         #bot_answer = "{0}: {1}".format(user["user"]["name"],user_status)
         bot_answer = "{0}".format(user_status)

@@ -39,18 +39,19 @@ async def consumer(message):
     message_user = message.get('user')
     if message.get('type') == 'message' and message_user not in (bot_infos['id'], None):
         text = message["text"].split(' ')
-        if text[0] != ("<@" + str(bot_infos['id']) + ">:") or len(text) < 3:
-            await send_help(message['channel'])
-
-        else:
-            if text[1] in handled_commands:
-                if text[1] == handled_commands[0]:
-                    asked_user = text[2]
-                    user_status = await check_user(asked_user)
-                    bot_answer = "{0}".format(user_status)
-                    await answer(message['channel'], bot_answer)
-            else:
+        if text[0] == ("<@" + str(bot_infos['id']) + ">:"):
+            if  len(text) < 3:
                 await send_help(message['channel'])
+
+            else:
+                if text[1] in handled_commands:
+                    if text[1] == handled_commands[0]:
+                        asked_user = text[2]
+                        user_status = await check_user(asked_user)
+                        bot_answer = "{0}".format(user_status)
+                        await answer(message['channel'], bot_answer)
+                else:
+                    await send_help(message['channel'])
     else:
        print(message, file=sys.stderr)
 

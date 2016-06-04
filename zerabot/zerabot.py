@@ -4,11 +4,11 @@ import sys
 from aiohttp import ClientSession, errors
 import aiohttp
 
-from api import api_call
+from .api import api_call
 
-from config import TOKEN
+from .config import TOKEN
 
-from twitch import check_user
+from .twitch import check_user
 
 bot_infos = dict()
 handled_commands = ("streams","help")

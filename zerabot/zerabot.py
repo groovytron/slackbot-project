@@ -1,8 +1,6 @@
 import asyncio
 import json
 import sys
-from urllib.request import urlopen
-from urllib.error import URLError
 from aiohttp import ClientSession, errors
 import aiohttp
 
@@ -12,7 +10,7 @@ from bot_token import TOKEN
 
 from twitch import check_user
 
-import re
+bot_infos = dict()
 
 async def answer(user_token, message):
     data = {"token": TOKEN, "channel": user_token,"text": message}
@@ -21,21 +19,29 @@ async def answer(user_token, message):
 
 async def consumer(message):
     """Display the message."""
+    global bot_infos
     #print("message user:", message.get('user'))
     message_user = message.get('user')
-    if message.get('type') == 'message' and message_user != None:
+    print("received message:", message)
+    print(message_user, " != ", bot_infos['id'], message_user != bot_infos['id'])
+    if message.get('type') == 'message' and message_user not in (bot_infos['id'], None):
         #user = await api_call('users.info',{'user': message.get('user')})
         # asked_user = re.search(r'(\S+)', message["text"].strip())
-        asked_user = message["text"].split(' ', 1)[0]
-        user_status = await check_user(asked_user)
+        text = message["text"].split(' ')
+        if text[0] != ("<@" + str(bot_infos['id']) + ">:"):
+            await answer(message['channel'], "Please call me")
+
+        else:
+            asked_user = text[1]
+            user_status = await check_user(asked_user)
         #print("{0}: {1}".format(user["user"]["name"],user_status))
         #bot_answer = "{0}: {1}".format(user["user"]["name"],user_status)
-        bot_answer = "{0}".format(user_status)
+            bot_answer = "{0}".format(user_status)
         #print(bot_answer)
         #print(message)
-        await answer(message['channel'], bot_answer)
-    else:
-        print(message, file=sys.stderr)
+            await answer(message['channel'], bot_answer)
+    #else:
+    #    print(message, file=sys.stderr)
 
 
 async def bot(token=TOKEN):
@@ -49,7 +55,10 @@ async def bot(token=TOKEN):
                 assert msg.tp == aiohttp.MsgType.text
                 message = json.loads(msg.data)
                 #print(message)
-                #my_self = rtm['self']['id']
+                # infos = {'id': rtm['self']['id']}
+                global bot_infos
+                bot_infos.update({'id': rtm['self']['id'], 'name': rtm['self']['name']})
+                print(bot_infos)
                 #print(my_self)
                 #print(rtm['self']['name'])
                 asyncio.ensure_future(consumer(message))

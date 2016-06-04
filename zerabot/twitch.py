@@ -1,4 +1,4 @@
-""" Functions allowing to interct with Twich API. """
+""" Functions allowing to interct with Twitch API. """
 
 import asyncio
 import json

@@ -4,6 +4,7 @@ from urllib.request import urlopen
 from urllib.error import URLError
 import json
 import asyncio
+import time
 from aiohttp import ClientSession, errors
 
 async def check_user(user):
@@ -21,7 +22,7 @@ async def check_user(user):
                 else:
                     status = 0
                     print(info['stream']['channel']['display_name'], "is playing", info['stream']['game'], "in front of", info['stream']['viewers'], "viewers")
-                    return "Watch here {0}"format(info['stream']['channel']['url'])
+                    return "Watch here {0}".format(info['stream']['channel']['url'])
             except URLError as e:
                     pass
                     if e.reason == 'Not Found' or e.reason == 'Unprocessable Entity':
@@ -46,14 +47,24 @@ async def run(users):
         task = asyncio.ensure_future(fetch(user))
         tasks.append(task)
     responses = await asyncio.gather(*tasks)
-    print(responses)
+    return responses
+
+def regular_check(users):
+    while True:
+        loop = asyncio.get_event_loop()
+        future = asyncio.ensure_future(run(users))
+        résultat = loop.run_until_complete(future)
+        print(résultat)
+        time.sleep(5)
 
 # main
 try:
     # user = parse_args().USER[0]
     users = ['Zerator', 'Fukano', 'Domingo', '-1']
-    loop = asyncio.get_event_loop()
-    future = asyncio.ensure_future(run(users))
-    loop.run_until_complete(future)
+    # loop = asyncio.get_event_loop()
+    # future = asyncio.ensure_future(run(users))
+    # résultat = loop.run_until_complete(future)
+    # print(résultat)
+    regular_check(users)
 except KeyboardInterrupt:
     pass

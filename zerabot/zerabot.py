@@ -6,7 +6,7 @@ import aiohttp
 
 from api import api_call
 
-from bot_token import TOKEN
+from config import TOKEN
 
 from twitch import check_user
 

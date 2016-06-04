@@ -3,7 +3,7 @@ import asyncio
 
 import aiohttp
 
-from bot_token import TOKEN
+from config import TOKEN
 
 
 async def api_call(method, data=None, token=TOKEN):
